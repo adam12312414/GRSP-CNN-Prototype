@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green CNN Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- Top navigation bar -->
+  <header class="topbar">
+    <div class="brand">
+      <img
+        class="cnn-logo"
+        src="images/cnn.webp"
+        alt="CNN logo"
+        loading="lazy"
+        title="Lightweight logo optimised for reduced data transfer"
+      />
+      <span class="green-badge">Low-Carbon Prototype</span>
+    </div>
+
+
+
+    <nav class="navlinks" aria-label="Primary">
+      <button class="navbtn" data-filter="all" type="button">All</button>
+      <button class="navbtn" data-filter="world" type="button">World</button>
+      <button class="navbtn" data-filter="politics" type="button">Politics</button>
+      <button class="navbtn" data-filter="business" type="button">Business</button>
+      <button class="navbtn" data-filter="health" type="button">Health</button>
+      <button class="navbtn" data-filter="tech" type="button">Tech</button>
+    </nav>
+
+    <div class="topbar-actions">
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+
+      <button
+        id="lowCarbonToggle"
+        class="theme-toggle"
+        aria-label="Toggle Low-Carbon Reading Mode"
+        title="Low-Carbon Reading Mode">
+        🪫
+      </button>
+      <input id="search" class="search-input" type="text" placeholder="Search headlines..." autocomplete="off" />
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="layout" id="news-list">
+    <p id="noResults" class="no-results" hidden>No results found.</p>
+
+    <!-- LEFT COLUMN (2-column grid layout) -->
+    <section class="col-main" aria-label="Top stories">
+
+      <!-- HERO (spans 2 columns) -->
+      <article class="card hero" data-title="Global climate summit reaches new agreement" data-category="world">
+        <a class="card-link" href="top_story.html">
+          <img class="card-img" src="images/news1.webp" alt="Climate summit" loading="lazy" />
+          <div class="card-body">
+            <p class="kicker">Top Story</p>
+            <h2 class="card-title">Global climate summit reaches new agreement</h2>
+            <p class="card-desc">
+              World leaders agree on new climate commitments and clearer reporting standards.
+            </p>
+          </div>
+        </a>
+      </article>
+
+
+      <!-- MAIN GRID -->
+      <article class="card" data-title="Renewable energy adoption rises worldwide" data-category="business">
+        <a class="card-link" href="renewable_article.html">
+          <img class="card-img" src="images/news2.webp" alt="Renewable energy" loading="lazy" />
+          <div class="card-body">
+            <p class="kicker">Business</p>
+            <h2 class="card-title">Renewable energy adoption rises worldwide</h2>
+            <p class="card-desc">
+              Solar and wind capacity expands as costs fall and policies strengthen.
+            </p>
+          </div>
+        </a>
+      </article>
+
+      <article class="card" data-title="Electric vehicles see record sales growth" data-category="tech">
+        <a class="card-link" href="ev_article.html">
+          <img class="card-img" src="images/news3.webp" alt="Electric vehicles" loading="lazy" />
+          <div class="card-body">
+            <p class="kicker">Tech</p>
+            <h2 class="card-title">Electric vehicles see record sales growth</h2>
+            <p class="card-desc">
+              EV adoption increases as charging infrastructure becomes more available.
+            </p>
+          </div>
+        </a>
+      </article>
+
+      <article class="card" data-title="Heatwaves raise health risks worldwide" data-category="health">
+        <img class="card-img" src="images/news4.webp" alt="Heatwave warning" loading="lazy" />
+        <div class="card-body">
+          <p class="kicker">Health</p>
+          <h2 class="card-title">Heatwaves raise health risks worldwide</h2>
+          <p class="card-desc">
+            Doctors warn of dehydration and heat exhaustion as temperatures rise. Vulnerable groups such as the elderly and outdoor workers are most at risk.
+          </p>
+        </div>
+      </article>
+
+      <article class="card" data-title="Governments invest in renewable energy projects" data-category="politics">
+        <img class="card-img" src="images/news5.webp" alt="Energy policy" loading="lazy" />
+        <div class="card-body">
+          <p class="kicker">Politics</p>
+          <h2 class="card-title">Governments invest in renewable energy projects</h2>
+          <p class="card-desc">
+            New funding supports cleaner grids, storage, and community energy programmes.
+          </p>
+        </div>
+      </article>
+    </section> 
+
+    <!-- RIGHT COLUMN (keep for ALL; only hide More stories on category filters) -->
+    <aside class="col-side" aria-label="Sidebar">
+
+      <section class="side-block" id="catchUpBlock">
+        <h3 class="side-title">Catch up</h3>
+        <ul class="side-list">
+          <li class="side-item" data-title="Heatwave preparedness: what to do this week">
+            <a href="#" class="side-link">Heatwave preparedness: what to do this week</a>
+          </li>
+          <li class="side-item" data-title="5 easy ways to reduce digital carbon footprint">
+            <a href="#" class="side-link">5 easy ways to reduce digital carbon footprint</a>
+          </li>
+          <li class="side-item" data-title="Dark mode and its impact on device energy use">
+            <a href="#" class="side-link">Dark mode and its impact on device energy use</a>
+          </li>
+          <li class="side-item" data-title="Data centres shift toward greener energy">
+            <a href="#" class="side-link">Data centres shift toward greener energy</a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="side-block" id="greenNotesBlock">
+        <h3 class="side-title">Green Design Notes</h3>
+        <p class="side-text">
+          This prototype removes ads and autoplay, uses lazy-loaded images, and runs all filtering
+          locally to reduce energy use.
+        </p>
+      </section>
+
+      <!-- KEEP THIS for ALL; hide this block on category filters -->
+      <section class="side-block" id="moreStoriesBlock">
+        <h3 class="side-title">More stories</h3>
+
+        <div class="side-cards">
+
+          <article class="card compact" data-title="New environmental policies debated in parliament" data-category="politics">
+            <img class="card-img" src="images/news6.webp" alt="Parliament debate" loading="lazy" />
+            <div class="card-body">
+              <p class="kicker">Politics</p>
+              <h2 class="card-title">New environmental policies debated in parliament</h2>
+              <p class="card-desc">
+                Lawmakers discuss stricter emissions rules and long-term sustainability goals.
+              </p>
+            </div>
+          </article>
+
+          <article class="card compact" data-title="Companies shift toward sustainable supply chains" data-category="business">
+            <img class="card-img" src="images/news7.webp" alt="Supply chain" loading="lazy" />
+            <div class="card-body">
+              <p class="kicker">Business</p>
+              <h2 class="card-title">Companies shift toward sustainable supply chains</h2>
+              <p class="card-desc">
+                Firms reduce waste and emissions by rethinking sourcing and logistics.
+              </p>
+            </div>
+          </article>
+
+          <article class="card compact" data-title="Rising sea levels threaten coastal cities" data-category="world">
+            <img class="card-img" src="images/news8.webp" alt="Coastal flooding" loading="lazy" />
+            <div class="card-body">
+              <p class="kicker">World</p>
+              <h2 class="card-title">Rising sea levels threaten coastal cities</h2>
+              <p class="card-desc">
+                Scientists warn that climate change is accelerating coastal erosion worldwide.
+              </p>
+            </div>
+          </article>
+
+          <article class="card compact" data-title="Sustainable diets linked to better health outcomes" data-category="health">
+            <img class="card-img" src="images/news9.webp" alt="Healthy diet" loading="lazy" />
+            <div class="card-body">
+              <p class="kicker">Health</p>
+              <h2 class="card-title">Sustainable diets linked to better health outcomes</h2>
+              <p class="card-desc">
+                Plant-based diets may improve long-term health while reducing emissions.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <!-- FULL-WIDTH LOAD MORE SECTION (Option B) -->
+  <section class="load-more-section" aria-label="More articles">
+    <div class="load-more-grid">
+      <article class="card more-hidden" data-title="Tech companies commit to carbon neutrality" data-category="tech">
+        <img class="card-img" src="images/news10.webp" alt="Green tech" loading="lazy" />
+        <div class="card-body">
+          <p class="kicker">Tech</p>
+          <h2 class="card-title">Tech companies commit to carbon neutrality</h2>
+          <p class="card-desc">Major firms announce efficiency upgrades and emissions reduction roadmaps.</p>
+        </div>
+      </article>
+
+      <article class="card more-hidden" data-title="Cities expand bike lanes to cut emissions" data-category="world">
+        <img class="card-img" src="images/news11.webp" alt="Bike lanes" loading="lazy" />
+        <div class="card-body">
+          <p class="kicker">World</p>
+          <h2 class="card-title">Cities expand bike lanes to cut emissions</h2>
+          <p class="card-desc">Urban planners promote active travel to reduce congestion and air pollution.</p>
+        </div>
+      </article>
+
+      <article class="card more-hidden" data-title="Homes adopt heat pumps as energy prices shift" data-category="business">
+        <img class="card-img" src="images/news12.webp" alt="Heat pump" loading="lazy" />
+        <div class="card-body">
+          <p class="kicker">Business</p>
+          <h2 class="card-title">Homes adopt heat pumps as energy prices shift</h2>
+          <p class="card-desc">More households switch to efficient heating as incentives increase.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="load-more-wrap">
+      <button id="loadMoreBtn" class="load-more" type="button">
+        Load more
+      </button>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Optimised for sustainability • No ads • No autoplay • Minimal JavaScript</p>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
