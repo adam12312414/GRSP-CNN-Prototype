@@ -1,10 +1,14 @@
 // ELEMENT REFERENCES
 const searchInput = document.getElementById("search");
-const cards = document.querySelectorAll(".col-main .card"); // MAIN cards only
+function getMainCards() {
+  return document.querySelectorAll(".col-main .card");
+}
 const sideItems = document.querySelectorAll(".side-item");
 const noResults = document.getElementById("noResults");
 const navBtns = document.querySelectorAll(".navbtn");
 const loadMoreBtn = document.getElementById("loadMoreBtn");
+const extraCards = document.getElementById("extraCards");
+const moreStoryCards = document.querySelectorAll("#moreStoriesBlock .card[data-category]");
 
 const root = document.documentElement;
 const themeToggle = document.getElementById("themeToggle");
@@ -24,6 +28,31 @@ function hydrateImages(scope = document) {
   });
 }
 
+function renderExtrasForCategory() {
+  if (!extraCards) return;
+
+  // Clear previously injected cards
+  extraCards.innerHTML = "";
+
+  // Only inject extras when a category tab (not All) is selected
+  if (activeCategory === "all") return;
+
+  moreStoryCards.forEach((card) => {
+    const category = (card.dataset.category || "").toLowerCase();
+    if (category !== activeCategory) return;
+
+    // Clone sidebar card into main grid
+    const clone = card.cloneNode(true);
+    clone.classList.remove("compact"); // optional: make it look like normal cards
+    extraCards.appendChild(clone);
+
+    // If standard mode, load the image for this injected card
+    if (!document.body.classList.contains("low-carbon")) {
+      hydrateImages(clone);
+    }
+  });
+}
+
 // FILTERING (SEARCH + CATEGORY)
 if (navBtns.length) {
   document.body.classList.add("view-all");
@@ -35,7 +64,7 @@ function applyFilters() {
   const q = searchInput.value.trim().toLowerCase();
   let visibleCount = 0;
 
-  cards.forEach((card) => {
+  getMainCards().forEach((card) => {
     const title = (card.dataset.title || "").toLowerCase();
     const category = (card.dataset.category || "all").toLowerCase();
 
@@ -74,7 +103,9 @@ navBtns.forEach((btn) => {
     document.body.classList.toggle("view-all", activeCategory === "all");
     document.body.classList.toggle("view-category", activeCategory !== "all");
 
+    renderExtrasForCategory(); // ✅ ADD
     applyFilters();
+
   });
 });
 
@@ -82,6 +113,7 @@ document
   .querySelector('.navbtn[data-filter="all"]')
   ?.classList.add("active");
 
+renderExtrasForCategory(); // ✅ ADD
 applyFilters();
 
 // THEME TOGGLE (LIGHT / DARK)
