@@ -563,3 +563,15 @@ body.low-carbon .col-main {
   font-size: .8rem;
   color: var(--muted);
 }
+
+/* Hide Load More for category views */
+body.view-category .load-more-section {
+  display: none;
+}
+
+/* Extra cards injected for category views */
+.extra-cards {
+  display: contents; /* makes its children behave like direct .col-main grid items */
+}
+
+
