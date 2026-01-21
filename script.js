@@ -1,8 +1,4 @@
-// Green JS: local filtering (no server calls)
-// - Search filters by title
-// - Category tabs filter by data-category
-// - Shows "No results found" if nothing matches
-
+// ELEMENT REFERENCES
 const searchInput = document.getElementById("search");
 const cards = document.querySelectorAll(".col-main .card"); // MAIN cards only
 const sideItems = document.querySelectorAll(".side-item");
@@ -10,9 +6,25 @@ const noResults = document.getElementById("noResults");
 const navBtns = document.querySelectorAll(".navbtn");
 const loadMoreBtn = document.getElementById("loadMoreBtn");
 
+const root = document.documentElement;
+const themeToggle = document.getElementById("themeToggle");
+const lowCarbonToggle = document.getElementById("lowCarbonToggle");
+
+const modeModal = document.getElementById("modeModal");
+const chooseStandard = document.getElementById("chooseStandard");
+const chooseLow = document.getElementById("chooseLow");
+
 let activeCategory = "all";
 
-// Set homepage view class
+// IMAGE HYDRATION (ONLY PLACE IMAGES ARE LOADED)
+function hydrateImages(scope = document) {
+  scope.querySelectorAll("img[data-src]").forEach((img) => {
+    img.src = img.dataset.src;
+    img.removeAttribute("data-src");
+  });
+}
+
+// FILTERING (SEARCH + CATEGORY)
 if (navBtns.length) {
   document.body.classList.add("view-all");
 }
@@ -23,7 +35,6 @@ function applyFilters() {
   const q = searchInput.value.trim().toLowerCase();
   let visibleCount = 0;
 
-  // Filter MAIN cards
   cards.forEach((card) => {
     const title = (card.dataset.title || "").toLowerCase();
     const category = (card.dataset.category || "all").toLowerCase();
@@ -33,77 +44,53 @@ function applyFilters() {
 
     const show = matchSearch && matchCategory;
     card.style.display = show ? "" : "none";
-
     if (show) visibleCount++;
   });
 
-  // Filter sidebar "Catch up" items (search only)
   sideItems.forEach((item) => {
     const title = (item.dataset.title || "").toLowerCase();
-    const show = q === "" || title.includes(q);
-    item.style.display = show ? "" : "none";
+    item.style.display = q === "" || title.includes(q) ? "" : "none";
   });
 
-  // No results message
   if (noResults) {
     noResults.hidden = visibleCount !== 0;
   }
 
-  // Show / hide Load More
   if (loadMoreBtn) {
     const hiddenLeft = document.querySelectorAll(".more-hidden").length > 0;
-    const shouldShow =
-      activeCategory === "all" &&
-      hiddenLeft &&
-      q === "";
-
-    loadMoreBtn.style.display = shouldShow ? "" : "none";
+    loadMoreBtn.style.display =
+      activeCategory === "all" && hiddenLeft && q === "" ? "" : "none";
   }
 }
 
-// Search input
-if (searchInput) {
-  searchInput.addEventListener("input", applyFilters);
-}
+searchInput?.addEventListener("input", applyFilters);
 
-// Category buttons
-if (navBtns.length) {
-  navBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      navBtns.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
+navBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    navBtns.forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
 
-      activeCategory = btn.dataset.filter || "all";
+    activeCategory = btn.dataset.filter || "all";
+    document.body.classList.toggle("view-all", activeCategory === "all");
+    document.body.classList.toggle("view-category", activeCategory !== "all");
 
-      document.body.classList.toggle("view-all", activeCategory === "all");
-      document.body.classList.toggle("view-category", activeCategory !== "all");
-
-      applyFilters();
-    });
+    applyFilters();
   });
+});
 
-  // Default active tab
-  document
-    .querySelector('.navbtn[data-filter="all"]')
-    ?.classList.add("active");
+document
+  .querySelector('.navbtn[data-filter="all"]')
+  ?.classList.add("active");
 
-  // Initial render
-  applyFilters();
-}
+applyFilters();
 
-// Theme toggle (Light / Dark)
-const root = document.documentElement;
-const themeToggle = document.getElementById("themeToggle");
-
+// THEME TOGGLE (LIGHT / DARK)
 if (themeToggle) {
   const savedTheme = localStorage.getItem("theme");
 
   if (savedTheme) {
     root.setAttribute("data-theme", savedTheme);
     themeToggle.textContent = savedTheme === "light" ? "🌙" : "☀️";
-  } else {
-    const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-    themeToggle.textContent = prefersLight ? "🌙" : "☀️";
   }
 
   themeToggle.addEventListener("click", () => {
@@ -116,26 +103,85 @@ if (themeToggle) {
   });
 }
 
-// Low-Carbon Reading Mode (Text-first)
-const lowCarbonToggle = document.getElementById("lowCarbonToggle");
+// LOW-CARBON MODE
+function setLowCarbonMode(isOn) {
+  document.body.classList.toggle("low-carbon", isOn);
+  localStorage.setItem("lowCarbon", String(isOn));
 
-if (lowCarbonToggle) {
-  const savedLowCarbon = localStorage.getItem("lowCarbon");
-  if (savedLowCarbon === "true") {
-    document.body.classList.add("low-carbon");
-  }
-
-  lowCarbonToggle.addEventListener("click", () => {
-    document.body.classList.toggle("low-carbon");
-    localStorage.setItem(
-      "lowCarbon",
-      document.body.classList.contains("low-carbon")
-    );
-  });
+  // Standard mode -> load images now
+  if (!isOn) hydrateImages();
 }
 
-// Load More (ONE click only)
+
+// POPUP ONCE PER TAB SESSION
+const POPUP_FLAG = "greenCNN_modePopupShown=1";
+
+function popupAlreadyShownThisTab() {
+  return (window.name || "").includes(POPUP_FLAG);
+}
+
+function markPopupShownThisTab() {
+  const name = window.name || "";
+  if (!name.includes(POPUP_FLAG)) {
+    window.name = name ? `${name};${POPUP_FLAG}` : POPUP_FLAG;
+  }
+}
+
+document.querySelectorAll('a.card-link[data-article="true"]').forEach((link) => {
+  link.addEventListener("click", () => {
+    sessionStorage.setItem("skipModePopupOnce", "true");
+  });
+});
+
+(function initReadingMode() {
+  // Always apply saved mode on page load
+  // Default = LOW-CARBON if no preference exists yet
+  const savedPref = localStorage.getItem("lowCarbon");
+  const isLowCarbon = savedPref === null ? true : savedPref === "true";
+  setLowCarbonMode(isLowCarbon);
+
+  if (sessionStorage.getItem("skipModePopupOnce") === "true") {
+    sessionStorage.removeItem("skipModePopupOnce");
+    return;
+  }
+
+  // Once per TAB session
+  if (popupAlreadyShownThisTab()) return;
+
+  markPopupShownThisTab();
+
+  // Show popup
+  if (modeModal) modeModal.hidden = false;
+})();
+
+
+// Modal buttons
+chooseStandard?.addEventListener("click", () => {
+  modeModal.hidden = true;
+  setLowCarbonMode(false);
+});
+
+chooseLow?.addEventListener("click", () => {
+  modeModal.hidden = true;
+  setLowCarbonMode(true);
+});
+
+
+// toggle button
+lowCarbonToggle?.addEventListener("click", () => {
+  const next = !document.body.classList.contains("low-carbon");
+  setLowCarbonMode(next);
+});
+
+// LOAD MORE (DEMAND-BASED IMAGE LOADING)
 loadMoreBtn?.addEventListener("click", () => {
-  document.querySelectorAll(".more-hidden").forEach(el => el.classList.remove("more-hidden"));
+  document.querySelectorAll(".more-hidden").forEach((el) => {
+    el.classList.remove("more-hidden");
+
+    if (!document.body.classList.contains("low-carbon")) {
+      hydrateImages(el);
+    }
+  });
+
   loadMoreBtn.style.display = "none";
 });
