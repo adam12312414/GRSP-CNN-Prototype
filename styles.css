@@ -511,3 +511,55 @@ body.low-carbon .col-main {
   object-fit: cover;
   object-position: center;
 }
+
+.modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.modal[hidden]{
+  display: none !important;
+}
+
+.modal-card{
+  width: min(520px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.modal-title{ margin: 0 0 8px; font-size: 1.1rem; }
+.modal-text{ margin: 0 0 14px; color: var(--muted); }
+
+.modal-actions{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.modal-btn{
+  border-radius: 999px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.modal-btn.primary{
+  border-color: #2ecc71;
+}
+
+.modal-note{
+  margin: 0;
+  font-size: .8rem;
+  color: var(--muted);
+}
