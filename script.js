@@ -18,11 +18,25 @@ const modeModal = document.getElementById("modeModal");
 const chooseStandard = document.getElementById("chooseStandard");
 const chooseLow = document.getElementById("chooseLow");
 
+const colSide = document.querySelector(".col-side");
+const loadMoreSection = document.querySelector(".load-more-section");
+
 let activeCategory = "all";
 
-// IMAGE HYDRATION (ONLY PLACE IMAGES ARE LOADED)
-function hydrateImages(scope = document) {
+// IMAGE HYDRATION (ONLY LOAD IMAGES THAT ARE ACTUALLY VISIBLE)
+function hydrateImagesVisible(scope = document) {
   scope.querySelectorAll("img[data-src]").forEach((img) => {
+    // Skip images inside cards that are hidden (category filters, .more-hidden, etc.)
+    const card = img.closest(".card");
+
+    // offsetParent == null covers display:none ancestors and elements not in layout
+    const notVisible = card && card.offsetParent === null;
+
+    // Also skip if it's still marked as "more-hidden" (extra safety)
+    const isMoreHidden = card && card.classList.contains("more-hidden");
+
+    if (notVisible || isMoreHidden) return;
+
     img.src = img.dataset.src;
     img.removeAttribute("data-src");
   });
@@ -43,12 +57,12 @@ function renderExtrasForCategory() {
 
     // Clone sidebar card into main grid
     const clone = card.cloneNode(true);
-    clone.classList.remove("compact"); // optional: make it look like normal cards
+    clone.classList.remove("compact");
     extraCards.appendChild(clone);
 
     // If standard mode, load the image for this injected card
     if (!document.body.classList.contains("low-carbon")) {
-      hydrateImages(clone);
+      hydrateImagesVisible(clone);
     }
   });
 }
@@ -61,14 +75,17 @@ if (navBtns.length) {
 function applyFilters() {
   if (!searchInput) return;
 
+  // Normalise search query for case-insensitive matching
   const q = searchInput.value.trim().toLowerCase();
+  const isSearching = q !== "";
   let visibleCount = 0;
 
+  // Filter main grid cards by search text + active category
   getMainCards().forEach((card) => {
     const title = (card.dataset.title || "").toLowerCase();
     const category = (card.dataset.category || "all").toLowerCase();
 
-    const matchSearch = q === "" || title.includes(q);
+    const matchSearch = !isSearching || title.includes(q);
     const matchCategory = activeCategory === "all" || category === activeCategory;
 
     const show = matchSearch && matchCategory;
@@ -76,19 +93,23 @@ function applyFilters() {
     if (show) visibleCount++;
   });
 
+  // Filter sidebar "Catch up" items (only by search text)
   sideItems.forEach((item) => {
     const title = (item.dataset.title || "").toLowerCase();
-    item.style.display = q === "" || title.includes(q) ? "" : "none";
+    item.style.display = !isSearching || title.includes(q) ? "" : "none";
   });
 
+  if (colSide) colSide.style.display = isSearching ? "none" : "";
+  if (loadMoreSection) loadMoreSection.style.display = isSearching ? "none" : "";
+
   if (noResults) {
-    noResults.hidden = visibleCount !== 0;
+    noResults.hidden = !(isSearching && visibleCount === 0);
   }
 
   if (loadMoreBtn) {
     const hiddenLeft = document.querySelectorAll(".more-hidden").length > 0;
     loadMoreBtn.style.display =
-      activeCategory === "all" && hiddenLeft && q === "" ? "" : "none";
+      !isSearching && activeCategory === "all" && hiddenLeft ? "" : "none";
   }
 }
 
@@ -103,7 +124,7 @@ navBtns.forEach((btn) => {
     document.body.classList.toggle("view-all", activeCategory === "all");
     document.body.classList.toggle("view-category", activeCategory !== "all");
 
-    renderExtrasForCategory(); // ✅ ADD
+    renderExtrasForCategory();
     applyFilters();
 
   });
@@ -113,7 +134,7 @@ document
   .querySelector('.navbtn[data-filter="all"]')
   ?.classList.add("active");
 
-renderExtrasForCategory(); // ✅ ADD
+renderExtrasForCategory();
 applyFilters();
 
 // THEME TOGGLE (LIGHT / DARK)
@@ -135,15 +156,15 @@ if (themeToggle) {
   });
 }
 
-// LOW-CARBON MODE
 function setLowCarbonMode(isOn) {
   document.body.classList.toggle("low-carbon", isOn);
   localStorage.setItem("lowCarbon", String(isOn));
 
-  // Standard mode -> load images now
-  if (!isOn) hydrateImages();
+  // Standard mode -> load only what's visible right now
+  if (!isOn) {
+    hydrateImagesVisible(document);
+  }
 }
-
 
 // POPUP ONCE PER TAB SESSION
 const POPUP_FLAG = "greenCNN_modePopupShown=1";
@@ -186,18 +207,15 @@ document.querySelectorAll('a.card-link[data-article="true"]').forEach((link) => 
   if (modeModal) modeModal.hidden = false;
 })();
 
-
-// Modal buttons
 chooseStandard?.addEventListener("click", () => {
-  modeModal.hidden = true;
+  modeModal?.setAttribute("hidden", "");
   setLowCarbonMode(false);
 });
 
 chooseLow?.addEventListener("click", () => {
-  modeModal.hidden = true;
+  modeModal?.setAttribute("hidden", "");
   setLowCarbonMode(true);
 });
-
 
 // toggle button
 lowCarbonToggle?.addEventListener("click", () => {
@@ -205,13 +223,12 @@ lowCarbonToggle?.addEventListener("click", () => {
   setLowCarbonMode(next);
 });
 
-// LOAD MORE (DEMAND-BASED IMAGE LOADING)
 loadMoreBtn?.addEventListener("click", () => {
   document.querySelectorAll(".more-hidden").forEach((el) => {
     el.classList.remove("more-hidden");
 
     if (!document.body.classList.contains("low-carbon")) {
-      hydrateImages(el);
+      hydrateImagesVisible(el); // only hydrates the revealed cards
     }
   });
 
