@@ -75,8 +75,8 @@ img {
 }
 
 .cnn-logo{
-  height:70px;          /* noticeably bigger */
-  min-height: 44px;      /* force scaling */
+  height:70px;         
+  min-height: 44px;      
   width: auto;
 }
 
@@ -92,7 +92,7 @@ img {
 .navlinks {
   display: flex;
   gap: 6px;
-  margin-left: -120px; /* move nav slightly left */
+  margin-left: -120px; 
 }
 
 
@@ -100,10 +100,10 @@ img {
   background: transparent;
   border: 1px solid transparent;
   color: var(--muted);
-  padding: 8px 14px;   /* bigger buttons */
+  padding: 8px 14px;   
   border-radius: 999px;
   cursor: pointer;
-  font-size: 0.95rem;  /* bigger text */
+  font-size: 0.95rem; 
 }
 
 .navbtn:hover,
@@ -134,7 +134,7 @@ img {
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 0.85rem;
-  width: 270px; /* fixed (semicolon added) */
+  width: 270px;
 }
 
 .theme-toggle {
@@ -163,13 +163,6 @@ img {
 .col-main {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.col-main > .load-more-grid {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -216,8 +209,8 @@ img {
 
 /* Images */
 .card-img {
-  width: 100%;              /* prevents narrow images leaving space */
-  object-position: center;  /* nicer crop focus */
+  width: 100%;              
+  object-position: center;
 }
 
 /* Main grid image sizes */
@@ -319,17 +312,17 @@ body.view-category #moreStoriesBlock {
   display: none;
 }
 
-/* Category view: make hero behave like normal card */
+/* Category view */
 body.view-category .col-main .hero {
   grid-column: auto;
 }
 
 body.view-category .col-main .hero .card-img {
-  height: 180px; /* same as normal cards */
+  height: 180px; 
 }
 
 body.view-category .col-main .hero .kicker {
-  display: none; /* hide "Top Story" on category pages */
+  display: none;
 }
 
 /* Responsive */
@@ -417,24 +410,46 @@ body.view-category .col-main .hero .kicker {
   margin: 0 auto;     
 }
 
-/* Low-Carbon Reading Mode */
-body.low-carbon .card-img {
-  height: 120px;
-  background: var(--surface-2);
+.img-wrap{
+  position: relative;
+  width: 100%;
+}
+
+.img-wrap .card-img{
+  width: 100%;
+  display: block;
+}
+
+body.low-carbon .col-main .img-wrap { height: 180px; }      
+body.low-carbon .col-main .hero .img-wrap { height: 360px; } 
+body.low-carbon .side-cards .img-wrap { height: 100%; }      
+body.low-carbon .load-more-section .img-wrap { height: 200px; } 
+
+body.low-carbon .img-wrap::after{
+  content: "🖼️";
+  position: absolute;
+  inset: 0;
   display: grid;
   place-items: center;
-
-  /* Critical: stop image rendering */
-  content-visibility: hidden;
-}
-
-/* CSS-only placeholder icon */
-body.low-carbon .card-img::after {
-  content: "🖼️";
-  font-size: 1.5rem;
   opacity: 0.4;
-  content-visibility: visible;
+  font-size: 1.5rem;
 }
+
+body.low-carbon .img-wrap{
+  background: var(--surface-2);
+}
+
+body.low-carbon.view-category .col-main .hero .img-wrap { height: 180px; }
+
+.card.compact .img-wrap{
+  width: 120px;
+  height: 100%;
+}
+
+body.low-carbon .img-wrap .card-img{
+  display: none;
+}
+
 
 body.low-carbon .card {
   box-shadow: none;
@@ -483,8 +498,8 @@ body.low-carbon .col-main {
 }
 
 @media (max-width: 900px){
-  .col-main > .load-more-grid{
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .load-more-section .load-more-grid{
+    grid-template-columns: 1fr;
   }
 }
 
@@ -571,7 +586,9 @@ body.view-category .load-more-section {
 
 /* Extra cards injected for category views */
 .extra-cards {
-  display: contents; /* makes its children behave like direct .col-main grid items */
+  display: contents; 
 }
 
-
+.hidden {
+  display: none !important;
+}
