@@ -73,7 +73,11 @@
       <!-- HERO (spans 2 columns) -->
       <article class="card hero" data-title="Global climate summit reaches new agreement" data-category="world">
         <a class="card-link" href="top_story.html" data-article="true">
-          <img class="card-img" data-src="images/news1.webp" alt="Climate summit" loading="lazy" />
+
+          <div class="img-wrap">
+            <img class="card-img" data-src="images/news1.webp" alt="Climate summit" loading="lazy"/>
+          </div>
+
           <div class="card-body">
             <p class="kicker">Top Story</p>
             <h2 class="card-title">Global climate summit reaches new agreement</h2>
@@ -81,14 +85,16 @@
               World leaders agree on new climate commitments and clearer reporting standards.
             </p>
           </div>
+
         </a>
       </article>
-
 
       <!-- MAIN GRID -->
       <article class="card" data-title="Renewable energy adoption rises worldwide" data-category="business">
         <a class="card-link" href="renewable_article.html" data-article="true">
-          <img class="card-img" data-src="images/news2.webp" alt="Renewable energy" loading="lazy" />
+          <div class="img-wrap">
+            <img class="card-img" data-src="images/news2.webp" alt="Renewable energy" loading="lazy" />
+          </div>
           <div class="card-body">
             <p class="kicker">Business</p>
             <h2 class="card-title">Renewable energy adoption rises worldwide</h2>
@@ -101,7 +107,9 @@
 
       <article class="card" data-title="Electric vehicles see record sales growth" data-category="tech">
         <a class="card-link" href="ev_article.html" data-article="true">
-          <img class="card-img" data-src="images/news3.webp" alt="Electric vehicles" loading="lazy" />
+          <div class="img-wrap">
+            <img class="card-img" data-src="images/news3.webp" alt="Electric vehicles" loading="lazy" />
+          </div>
           <div class="card-body">
             <p class="kicker">Tech</p>
             <h2 class="card-title">Electric vehicles see record sales growth</h2>
@@ -113,7 +121,9 @@
       </article>
 
       <article class="card" data-title="Heatwaves raise health risks worldwide" data-category="health">
-        <img class="card-img" data-src="images/news4.webp" alt="Heatwave warning" loading="lazy" />
+        <div class="img-wrap">
+          <img class="card-img" data-src="images/news4.webp" alt="Heatwave warning" loading="lazy" />
+        </div>
         <div class="card-body">
           <p class="kicker">Health</p>
           <h2 class="card-title">Heatwaves raise health risks worldwide</h2>
@@ -124,7 +134,9 @@
       </article>
 
       <article class="card" data-title="Governments invest in renewable energy projects" data-category="politics">
-        <img class="card-img" data-src="images/news5.webp" alt="Energy policy" loading="lazy" />
+        <div class="img-wrap">
+          <img class="card-img" data-src="images/news5.webp" alt="Energy policy" loading="lazy" />
+        </div>
         <div class="card-body">
           <p class="kicker">Politics</p>
           <h2 class="card-title">Governments invest in renewable energy projects</h2>
@@ -164,7 +176,9 @@
         <div class="side-cards">
 
           <article class="card compact" data-title="New environmental policies debated in parliament" data-category="politics">
-            <img class="card-img" data-src="images/news6.webp" alt="Parliament debate" loading="lazy" />
+            <div class="img-wrap">
+              <img class="card-img" data-src="images/news6.webp" alt="Parliament debate" loading="lazy" />
+            </div>
             <div class="card-body">
               <p class="kicker">Politics</p>
               <h2 class="card-title">New environmental policies debated in parliament</h2>
@@ -175,7 +189,9 @@
           </article>
 
           <article class="card compact" data-title="Companies shift toward sustainable supply chains" data-category="business">
-            <img class="card-img" data-src="images/news7.webp" alt="Supply chain" loading="lazy" />
+            <div class="img-wrap">
+              <img class="card-img" data-src="images/news7.webp" alt="Supply chain" loading="lazy" />
+            </div>
             <div class="card-body">
               <p class="kicker">Business</p>
               <h2 class="card-title">Companies shift toward sustainable supply chains</h2>
@@ -186,7 +202,9 @@
           </article>
 
           <article class="card compact" data-title="Rising sea levels threaten coastal cities" data-category="world">
-            <img class="card-img" data-src="images/news8.webp" alt="Coastal flooding" loading="lazy" />
+            <div class="img-wrap">
+              <img class="card-img" data-src="images/news8.webp" alt="Coastal flooding" loading="lazy" />
+            </div>
             <div class="card-body">
               <p class="kicker">World</p>
               <h2 class="card-title">Rising sea levels threaten coastal cities</h2>
@@ -197,7 +215,9 @@
           </article>
 
           <article class="card compact" data-title="Sustainable diets linked to better health outcomes" data-category="health">
-            <img class="card-img" data-src="images/news9.webp" alt="Healthy diet" loading="lazy" />
+            <div class="img-wrap">
+              <img class="card-img" data-src="images/news9.webp" alt="Healthy diet" loading="lazy" />
+            </div>
             <div class="card-body">
               <p class="kicker">Health</p>
               <h2 class="card-title">Sustainable diets linked to better health outcomes</h2>
@@ -208,7 +228,9 @@
           </article>
 
           <article class="card compact" data-title="AI data centres push demand for cleaner energy" data-category="tech">
-            <img class="card-img" data-src="images/news10.webp" alt="AI data centre infrastructure" loading="lazy" />
+            <div class="img-wrap">
+              <img class="card-img" data-src="images/news10.webp" alt="AI data centre infrastructure" loading="lazy" />
+            </div>
             <div class="card-body">
               <p class="kicker">Technology</p>
               <h2 class="card-title">AI data centres push demand for cleaner energy</h2>
@@ -222,11 +244,13 @@
     </aside>
   </main>
 
-  <!-- FULL-WIDTH LOAD MORE SECTION (Option B) -->
+  <!-- FULL-WIDTH LOAD MORE SECTION -->
   <section class="load-more-section" aria-label="More articles">
     <div class="load-more-grid">
       <article class="card more-hidden" data-title="Tech companies commit to carbon neutrality" data-category="tech">
-        <img class="card-img" data-src="images/news11.webp" alt="Green tech" loading="lazy" />
+        <div class="img-wrap">
+          <img class="card-img" data-src="images/news11.webp" alt="Green tech" loading="lazy" />
+        </div>
         <div class="card-body">
           <p class="kicker">Tech</p>
           <h2 class="card-title">Tech companies commit to carbon neutrality</h2>
@@ -235,7 +259,9 @@
       </article>
 
       <article class="card more-hidden" data-title="Cities expand bike lanes to cut emissions" data-category="world">
-        <img class="card-img" data-src="images/news12.webp" alt="Bike lanes" loading="lazy" />
+        <div class="img-wrap">
+          <img class="card-img" data-src="images/news12.webp" alt="Bike lanes" loading="lazy" />
+        </div>
         <div class="card-body">
           <p class="kicker">World</p>
           <h2 class="card-title">Cities expand bike lanes to cut emissions</h2>
@@ -244,7 +270,9 @@
       </article>
 
       <article class="card more-hidden" data-title="Homes adopt heat pumps as energy prices shift" data-category="business">
-        <img class="card-img" data-src="images/news13.webp" alt="Heat pump" loading="lazy" />
+        <div class="img-wrap">
+          <img class="card-img" data-src="images/news13.webp" alt="Heat pump" loading="lazy" />
+        </div>
         <div class="card-body">
           <p class="kicker">Business</p>
           <h2 class="card-title">Homes adopt heat pumps as energy prices shift</h2>
