@@ -23,23 +23,39 @@ const loadMoreSection = document.querySelector(".load-more-section");
 
 let activeCategory = "all";
 
-// IMAGE HYDRATION (ONLY LOAD IMAGES THAT ARE ACTUALLY VISIBLE)
-function hydrateImagesVisible(scope = document) {
-  scope.querySelectorAll("img[data-src]").forEach((img) => {
-    // Skip images inside cards that are hidden (category filters, .more-hidden, etc.)
+let imgObserver = null;
+
+function startImageObserver() {
+  stopImageObserver();
+
+  imgObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      const img = entry.target;
+      const card = img.closest(".card");
+      const isMoreHidden = card && card.classList.contains("more-hidden");
+      if (isMoreHidden) return;
+
+      img.src = img.dataset.src;
+      img.removeAttribute("data-src");
+      imgObserver.unobserve(img);
+    });
+  }, { root: null, rootMargin: "200px 0px", threshold: 0.01 }); // loads slightly before entering view
+
+  document.querySelectorAll("img[data-src]").forEach((img) => {
     const card = img.closest(".card");
-
-    // offsetParent == null covers display:none ancestors and elements not in layout
-    const notVisible = card && card.offsetParent === null;
-
-    // Also skip if it's still marked as "more-hidden" (extra safety)
     const isMoreHidden = card && card.classList.contains("more-hidden");
-
-    if (notVisible || isMoreHidden) return;
-
-    img.src = img.dataset.src;
-    img.removeAttribute("data-src");
+    if (isMoreHidden) return;
+    imgObserver.observe(img);
   });
+}
+
+function stopImageObserver() {
+  if (imgObserver) {
+    imgObserver.disconnect();
+    imgObserver = null;
+  }
 }
 
 function renderExtrasForCategory() {
@@ -60,9 +76,9 @@ function renderExtrasForCategory() {
     clone.classList.remove("compact");
     extraCards.appendChild(clone);
 
-    // If standard mode, load the image for this injected card
     if (!document.body.classList.contains("low-carbon")) {
-      hydrateImagesVisible(clone);
+      // if observer is running, observe images in the newly injected cards
+      clone.querySelectorAll("img[data-src]").forEach((img) => imgObserver?.observe(img));
     }
   });
 }
@@ -160,9 +176,12 @@ function setLowCarbonMode(isOn) {
   document.body.classList.toggle("low-carbon", isOn);
   localStorage.setItem("lowCarbon", String(isOn));
 
-  // Standard mode -> load only what's visible right now
-  if (!isOn) {
-    hydrateImagesVisible(document);
+  if (isOn) {
+    // Low-carbon: don't load images at all
+    stopImageObserver();
+  } else {
+    // Standard: load images only when they come into view
+    startImageObserver();
   }
 }
 
@@ -208,12 +227,12 @@ document.querySelectorAll('a.card-link[data-article="true"]').forEach((link) => 
 })();
 
 chooseStandard?.addEventListener("click", () => {
-  modeModal?.setAttribute("hidden", "");
+  if (modeModal) modeModal.hidden = true;
   setLowCarbonMode(false);
 });
 
 chooseLow?.addEventListener("click", () => {
-  modeModal?.setAttribute("hidden", "");
+  if (modeModal) modeModal.hidden = true;
   setLowCarbonMode(true);
 });
 
@@ -226,11 +245,11 @@ lowCarbonToggle?.addEventListener("click", () => {
 loadMoreBtn?.addEventListener("click", () => {
   document.querySelectorAll(".more-hidden").forEach((el) => {
     el.classList.remove("more-hidden");
-
-    if (!document.body.classList.contains("low-carbon")) {
-      hydrateImagesVisible(el); // only hydrates the revealed cards
-    }
   });
+
+  if (!document.body.classList.contains("low-carbon")) {
+    startImageObserver(); 
+  }
 
   loadMoreBtn.style.display = "none";
 });
